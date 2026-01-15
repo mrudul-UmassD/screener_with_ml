@@ -1,0 +1,25 @@
+# Core ML and NLP Libraries
+scikit-learn==1.3.2
+spacy==3.7.2
+nltk==3.8.1
+sentence-transformers==2.2.2
+
+# Web Framework
+Flask==3.0.0
+flask-cors==4.0.0
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.2
+
+# Database
+sqlite3-python==1.0.0
+
+# Utilities
+python-dotenv==1.0.0
+PyPDF2==3.0.1
+python-docx==1.1.0
+
+# Development
+pytest==7.4.3
+black==23.12.1
