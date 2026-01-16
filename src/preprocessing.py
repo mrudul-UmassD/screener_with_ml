@@ -10,7 +10,14 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import WordNetLemmatizer
-import spacy
+
+# Import spaCy only when needed to avoid compatibility issues
+try:
+    import spacy
+    SPACY_AVAILABLE = True
+except Exception:
+    SPACY_AVAILABLE = False
+    spacy = None
 
 
 class TextPreprocessor:
@@ -39,12 +46,15 @@ class TextPreprocessor:
         self.stop_words = set(stopwords.words('english'))
         
         # Initialize spaCy if requested
-        if self.use_spacy:
+        if self.use_spacy and SPACY_AVAILABLE:
             try:
                 self.nlp = spacy.load('en_core_web_sm')
-            except OSError:
-                print("Warning: spaCy model not found. Run: python -m spacy download en_core_web_sm")
+            except (OSError, Exception) as e:
+                print(f"Warning: spaCy not available ({e}). Using NLTK only.")
                 self.use_spacy = False
+        elif self.use_spacy and not SPACY_AVAILABLE:
+            print("Warning: spaCy not available. Using NLTK only.")
+            self.use_spacy = False
     
     def _download_nltk_resources(self):
         """Download required NLTK resources if not already present."""

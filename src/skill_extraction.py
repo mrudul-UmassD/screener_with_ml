@@ -5,9 +5,16 @@ Combines keyword matching with NLP-based entity recognition.
 
 import re
 from typing import List, Set, Dict, Tuple
-import spacy
 from config import SKILL_KEYWORDS
 from src.preprocessing import TextPreprocessor
+
+# Import spaCy only when needed to avoid compatibility issues
+try:
+    import spacy
+    SPACY_AVAILABLE = True
+except Exception:
+    SPACY_AVAILABLE = False
+    spacy = None
 
 
 class SkillExtractor:
@@ -39,12 +46,15 @@ class SkillExtractor:
         self.use_spacy = use_spacy
         
         # Load spaCy model if available
-        if use_spacy:
+        if use_spacy and SPACY_AVAILABLE:
             try:
                 self.nlp = spacy.load('en_core_web_sm')
-            except OSError:
-                print("Warning: spaCy model not found. Using keyword matching only.")
+            except (OSError, Exception) as e:
+                print(f"Warning: spaCy not available ({e}). Using keyword matching only.")
                 self.use_spacy = False
+        elif use_spacy and not SPACY_AVAILABLE:
+            print("Warning: spaCy not available. Using keyword matching only.")
+            self.use_spacy = False
         
         # Compile regex patterns for common skill formats
         self._compile_patterns()

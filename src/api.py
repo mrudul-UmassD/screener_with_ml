@@ -28,8 +28,8 @@ class ResumeScreenerAPI:
         
         # Initialize components
         print("Initializing Resume Screener API...")
-        self.preprocessor = TextPreprocessor(use_spacy=True)
-        self.skill_extractor = SkillExtractor(use_spacy=True)
+        self.preprocessor = TextPreprocessor(use_spacy=False)
+        self.skill_extractor = SkillExtractor(use_spacy=False)
         self.embedding_generator = EmbeddingGenerator()
         self.scorer = CandidateScorer()
         self.db = Database()
