@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screener - ML-Powered Candidate Ranking</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect width="40" height="40" rx="8" fill="#4F46E5"/>
+                    <path d="M12 15L20 23L28 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 25H28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <h1>Resume Screener AI</h1>
+            </div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Total Jobs</span>
+                    <span class="stat-value" id="totalJobs">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Resumes</span>
+                    <span class="stat-value" id="totalResumes">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Screenings</span>
+                    <span class="stat-value" id="totalScreenings">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="upload">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 3L10 13M10 3L6 7M10 3L14 7"/>
+                    <path d="M4 17H16" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Upload Data
+            </button>
+            <button class="tab-btn" data-tab="screen">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <circle cx="10" cy="10" r="7" stroke="currentColor" fill="none" stroke-width="2"/>
+                    <path d="M10 7V10L12 12"/>
+                </svg>
+                Screen Candidates
+            </button>
+            <button class="tab-btn" data-tab="results">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <rect x="3" y="7" width="14" height="10" stroke="currentColor" fill="none" stroke-width="2"/>
+                    <path d="M7 7V5C7 3.89543 7.89543 3 9 3H11C12.1046 3 13 3.89543 13 5V7"/>
+                </svg>
+                View Results
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="content">
+            <!-- Upload Tab -->
+            <section class="tab-content active" id="upload-tab">
+                <div class="split-panel">
+                    <!-- Upload Resume -->
+                    <div class="panel">
+                        <h2>Upload Resume</h2>
+                        <form id="resumeForm" class="upload-form">
+                            <div class="form-group">
+                                <label for="candidateName">Candidate Name *</label>
+                                <input type="text" id="candidateName" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="candidateEmail">Email</label>
+                                <input type="email" id="candidateEmail" placeholder="john@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="candidatePhone">Phone</label>
+                                <input type="tel" id="candidatePhone" placeholder="+1-555-1234">
+                            </div>
+                            <div class="form-group">
+                                <label for="resumeContent">Resume Content *</label>
+                                <textarea id="resumeContent" rows="12" required placeholder="Paste resume text here...&#10;&#10;Include:&#10;- Skills and technologies&#10;- Work experience&#10;- Education&#10;- Projects"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 3V13M10 3L6 7M10 3L14 7"/>
+                                </svg>
+                                Upload Resume
+                            </button>
+                        </form>
+                        <div id="resumeResult" class="result-box"></div>
+                    </div>
+
+                    <!-- Upload Job -->
+                    <div class="panel">
+                        <h2>Upload Job Description</h2>
+                        <form id="jobForm" class="upload-form">
+                            <div class="form-group">
+                                <label for="jobTitle">Job Title *</label>
+                                <input type="text" id="jobTitle" required placeholder="Senior Python Developer">
+                            </div>
+                            <div class="form-group">
+                                <label for="jobDescription">Job Description *</label>
+                                <textarea id="jobDescription" rows="15" required placeholder="Paste job description here...&#10;&#10;Include:&#10;- Required skills&#10;- Responsibilities&#10;- Qualifications&#10;- Experience requirements"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 3V13M10 3L6 7M10 3L14 7"/>
+                                </svg>
+                                Upload Job
+                            </button>
+                        </form>
+                        <div id="jobResult" class="result-box"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen Tab -->
+            <section class="tab-content" id="screen-tab">
+                <div class="panel centered-panel">
+                    <h2>Screen Candidates</h2>
+                    <p class="subtitle">Select a job to screen candidates against</p>
+                    
+                    <form id="screenForm" class="screen-form">
+                        <div class="form-group">
+                            <label for="jobSelect">Select Job *</label>
+                            <select id="jobSelect" required>
+                                <option value="">Choose a job...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="info-card">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" fill="none" stroke-width="2"/>
+                                <path d="M12 8V12L14 14"/>
+                            </svg>
+                            <div>
+                                <h3>How it works</h3>
+                                <p>Our ML system will:</p>
+                                <ul>
+                                    <li>Extract skills from all uploaded resumes</li>
+                                    <li>Compare them with job requirements</li>
+                                    <li>Calculate semantic similarity scores</li>
+                                    <li>Rank candidates by overall match</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <circle cx="10" cy="10" r="7" stroke="currentColor" fill="none" stroke-width="2"/>
+                                <path d="M10 7V10L12 12"/>
+                            </svg>
+                            Start Screening
+                        </button>
+                    </form>
+
+                    <div id="screenResult" class="result-box"></div>
+                    <div id="screenProgress" class="progress-box" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Screening candidates... This may take a moment.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Tab -->
+            <section class="tab-content" id="results-tab">
+                <div class="panel">
+                    <div class="results-header">
+                        <h2>Screening Results</h2>
+                        <div class="form-group">
+                            <select id="resultsJobSelect">
+                                <option value="">Select a job to view results...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="resultsContainer" class="results-container">
+                        <div class="empty-state">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                <rect x="12" y="20" width="40" height="32" stroke="#D1D5DB" stroke-width="2" fill="none"/>
+                                <path d="M20 20V16C20 13.7909 21.7909 12 24 12H40C42.2091 12 44 13.7909 44 16V20" stroke="#D1D5DB" stroke-width="2"/>
+                            </svg>
+                            <p>No results yet. Upload data and run screening first.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="static/js/app.js"></script>
+</body>
+</html>

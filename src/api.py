@@ -3,12 +3,13 @@ Flask REST API for Resume Screening System.
 Provides endpoints for uploading resumes, job descriptions, and retrieving screening results.
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 from typing import Dict, List
 import json
 import uuid
 from datetime import datetime
+import os
 
 from src.preprocessing import TextPreprocessor
 from src.skill_extraction import SkillExtractor
@@ -23,7 +24,13 @@ class ResumeScreenerAPI:
     
     def __init__(self):
         """Initialize the API with all required components."""
-        self.app = Flask(__name__)
+        # Set template and static folders
+        template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
+        static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+        
+        self.app = Flask(__name__, 
+                        template_folder=template_dir,
+                        static_folder=static_dir)
         CORS(self.app)
         
         # Initialize components
@@ -40,6 +47,11 @@ class ResumeScreenerAPI:
     
     def _register_routes(self):
         """Register all API endpoints."""
+        
+        @self.app.route('/')
+        def index():
+            """Serve the frontend."""
+            return render_template('index.html')
         
         @self.app.route('/api/health', methods=['GET'])
         def health_check():
@@ -333,16 +345,31 @@ class ResumeScreenerAPI:
                     try:
                         job['required_skills'] = json.loads(job['required_skills'])
                     except:
-                        pass
-                
-                # Don't include large fields
-                job.pop('embedding', None)
-                
                 return jsonify({
                     'success': True,
                     'data': job
                 })
                 
+            except Exception as e:
+                return jsonify({
+                    'success': False,
+                    'error': str(e)
+                }), 500
+        
+        @self.app.route('/api/jobs', methods=['GET'])
+        def list_jobs():
+            """List all job descriptions."""
+            try:
+                # This is a simplified version - you'd implement get_all_jobs in Database
+                return jsonify({
+                    'success': True,
+                    'data': []
+                })
+            except Exception as e:
+                return jsonify({
+                    'success': False,
+                    'error': str(e)
+                }), 500
             except Exception as e:
                 return jsonify({
                     'success': False,
