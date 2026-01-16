@@ -345,6 +345,8 @@ class ResumeScreenerAPI:
                     try:
                         job['required_skills'] = json.loads(job['required_skills'])
                     except:
+                        pass  # Keep as string if parsing fails
+                
                 return jsonify({
                     'success': True,
                     'data': job
@@ -360,16 +362,21 @@ class ResumeScreenerAPI:
         def list_jobs():
             """List all job descriptions."""
             try:
-                # This is a simplified version - you'd implement get_all_jobs in Database
+                # Get all jobs from database
+                jobs = self.db.get_all_jobs()
+                
+                # Parse JSON fields for each job
+                for job in jobs:
+                    if job.get('required_skills'):
+                        try:
+                            job['required_skills'] = json.loads(job['required_skills'])
+                        except:
+                            pass
+                
                 return jsonify({
                     'success': True,
-                    'data': []
+                    'data': jobs
                 })
-            except Exception as e:
-                return jsonify({
-                    'success': False,
-                    'error': str(e)
-                }), 500
             except Exception as e:
                 return jsonify({
                     'success': False,

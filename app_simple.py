@@ -212,6 +212,34 @@ try:
                 'error': str(e)
             }), 500
     
+    @app.route('/api/jobs', methods=['GET'])
+    def list_jobs():
+        """List all job descriptions."""
+        try:
+            init_components()
+            
+            # Get all jobs from database
+            jobs = db.get_all_jobs()
+            
+            # Parse JSON fields for each job
+            for job in jobs:
+                if job.get('required_skills'):
+                    try:
+                        job['required_skills'] = json.loads(job['required_skills'])
+                    except:
+                        pass
+            
+            return jsonify({
+                'success': True,
+                'data': jobs
+            })
+            
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+    
     @app.route('/api/screen', methods=['POST'])
     def screen_candidates():
         """Screen resumes against a job description."""

@@ -276,6 +276,22 @@ class Database:
         
         return [dict(row) for row in rows]
     
+    def get_all_jobs(self) -> List[Dict]:
+        """
+        Retrieve all job descriptions from database.
+        
+        Returns:
+            List of job description dictionaries
+        """
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM job_descriptions ORDER BY created_at DESC')
+        rows = cursor.fetchall()
+        conn.close()
+        
+        return [dict(row) for row in rows]
+    
     def get_screening_results(self, job_id: str) -> List[Dict]:
         """
         Get screening results for a job, ordered by rank.
