@@ -1,12 +1,8 @@
 """
 Initialize the src package.
+Components are imported directly when needed to avoid circular imports
+and compatibility issues.
 """
-
-from .preprocessing import TextPreprocessor
-from .skill_extraction import SkillExtractor
-from .embeddings import EmbeddingGenerator
-from .scoring import CandidateScorer
-from .database import Database
 
 __all__ = [
     'TextPreprocessor',
